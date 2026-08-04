@@ -1,9 +1,14 @@
 <?php
 
+use App\Services\Elasticsearch\ElasticsearchConnection;
 use App\Services\Search\AssetSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    mockElasticsearchConnection(isAvailable: true);
+});
 
 it('requires a search query', function () {
     $response = $this->getJson('/search');
@@ -89,3 +94,19 @@ it('can surface semantic matches when the query words are absent from descriptio
     expect($response->json('results.0.description'))->not->toContain('hiring')
         ->and($response->json('results.0.description'))->toContain('headcount');
 });
+
+it('returns a service unavailable response when elasticsearch is down', function () {
+    mockElasticsearchConnection(isAvailable: false);
+
+    $this->getJson('/search?q=hiring')
+        ->assertServiceUnavailable()
+        ->assertJsonPath('message', fn (string $message) => str_contains($message, 'Cannot reach Elasticsearch'));
+});
+
+function mockElasticsearchConnection(bool $isAvailable): void
+{
+    $connection = Mockery::mock(ElasticsearchConnection::class);
+    $connection->shouldReceive('isAvailable')->andReturn($isAvailable);
+
+    app()->instance(ElasticsearchConnection::class, $connection);
+}
