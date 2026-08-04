@@ -24,6 +24,9 @@ pest()->extend(TestCase::class)
 pest()->extend(TestCase::class)
     ->in('Unit/Indexing');
 
+pest()->extend(TestCase::class)
+    ->in('Unit/Search');
+
 /*
 |--------------------------------------------------------------------------
 | Expectations
