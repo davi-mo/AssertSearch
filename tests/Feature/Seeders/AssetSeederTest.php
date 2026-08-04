@@ -1,10 +1,18 @@
 <?php
 
 use App\Models\Asset;
+use App\Services\Indexing\AssetIndexer;
 use Database\Seeders\AssetSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    $indexer = Mockery::mock(AssetIndexer::class);
+    $indexer->shouldIgnoreMissing();
+
+    app()->instance(AssetIndexer::class, $indexer);
+});
 
 it('seeds the committed sample asset library', function () {
     $this->seed(AssetSeeder::class);

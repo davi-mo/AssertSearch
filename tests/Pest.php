@@ -21,6 +21,9 @@ pest()->extend(TestCase::class)
 pest()->extend(TestCase::class)
     ->in('Unit/Services');
 
+pest()->extend(TestCase::class)
+    ->in('Unit/Indexing');
+
 /*
 |--------------------------------------------------------------------------
 | Expectations
