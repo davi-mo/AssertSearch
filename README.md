@@ -1,58 +1,181 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Asset Search — Foleon Backend Assessment
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Semantic search PoC for marketing assets. Asset descriptions are embedded with Ollama (`nomic-embed-text`), stored in Elasticsearch, and queried via a natural-language search endpoint.
 
-## About Laravel
+## Prerequisites
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+| Tool | Version | Notes |
+|------|---------|-------|
+| Docker & Docker Compose | recent | Runs the app, queue worker, and Elasticsearch |
+| Ollama | latest | Runs on the **host machine** (not in Docker) |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Pull the embedding model once:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+ollama pull nomic-embed-text
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Verify Ollama is running:
 
-## Contributing
+```bash
+curl http://localhost:11434/api/tags
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Quick start (recommended for reviewers)
 
-## Code of Conduct
+From the project root:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+# 1. Start all services (app, queue, elasticsearch)
+docker compose up -d --build
 
-## Security Vulnerabilities
+# 2. Load sample assets and build the search index (~110 assets, takes a minute)
+docker compose exec app php artisan assets:index --seed
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 3. Try semantic search
+curl -H 'Accept: application/json' 'http://localhost:8000/search?q=hiring'
+```
 
-## License
+Expected: results about recruiting/headcount even though the word "hiring" does not appear in the asset descriptions.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Example response
+
+```json
+{
+  "query": "hiring",
+  "results": [
+    {
+      "id": "ast_2005",
+      "name": "campus_recruiting_plan",
+      "description": "University recruiting strategy listing target schools, internship cohort size, and campus event calendar for engineering hires.",
+      "score": 0.79975593
+    }
+  ]
+}
+```
+
+## Running tests
+
+Tests use an in-memory SQLite database and mock Elasticsearch/Ollama — **no external services required**.
+
+**Inside Docker** (matches the review environment):
+
+```bash
+docker compose exec app php artisan test --compact
+```
+
+**On the host** (requires PHP 8.4+ and `composer install`):
+
+```bash
+composer test
+# or
+php artisan test --compact
+```
+
+Run a single file or test:
+
+```bash
+php artisan test --compact tests/Feature/Search/AssetSearchTest.php
+php artisan test --compact --filter="semantic matches"
+```
+
+All **27 tests** should pass.
+
+## Environment setup details
+
+### Docker (default)
+
+`docker-compose.yml` injects the required variables. On first boot, `docker/entrypoint.sh`:
+
+- copies `.env.example` → `.env` if missing
+- generates `APP_KEY`
+- creates `database/database.sqlite`
+- syncs `ELASTICSEARCH_HOST=http://elasticsearch:9200` into `.env`
+
+Ollama is reached from the container via `host.docker.internal:11434` (see `EMBEDDING_BASE_URL` in `docker-compose.yml`).
+
+### Local (without Docker)
+
+If you prefer running PHP directly on the host:
+
+```bash
+cp .env.example .env
+composer install
+touch database/database.sqlite
+php artisan key:generate
+php artisan migrate
+```
+
+Set in `.env`:
+
+```
+ELASTICSEARCH_HOST=http://localhost:9200
+EMBEDDING_BASE_URL=http://localhost:11434/v1
+```
+
+Start Elasticsearch separately (`docker compose up -d elasticsearch` is enough), then:
+
+```bash
+php artisan serve
+php artisan assets:index --seed
+```
+
+## Useful commands
+
+| Command | Purpose |
+|---------|---------|
+| `docker compose up -d --build` | Start / rebuild all services |
+| `docker compose exec app php artisan assets:index --seed` | Seed DB + index assets |
+| `docker compose exec app php artisan assets:index` | Re-index existing assets |
+| `docker compose exec app php artisan test --compact` | Run test suite |
+| `curl 'http://localhost:8000/search?q=hiring'` | Search endpoint |
+
+## Architecture
+
+```
+Asset (SQLite)
+  └─ Observer → AssetIndexer → EmbeddingGenerator (Ollama) → AssetSearchIndex (Elasticsearch)
+
+GET /search?q=… → AssetSearchService → embed query → kNN search → JSON
+```
+
+- **Embeddings:** Laravel AI SDK → OpenAI-compatible Ollama API (`nomic-embed-text`, 768 dims)
+- **Search:** Elasticsearch kNN on `description_vector`
+- **Lifecycle:** create/update/delete on `Asset` syncs the index automatically
+
+## Troubleshooting
+
+**`NoNodeAvailableException` / "No alive nodes"**
+
+The app container must use `http://elasticsearch:9200`, not `http://localhost:9200`. Rebuild and restart:
+
+```bash
+docker compose build app
+docker compose up -d
+```
+
+**503 "Cannot reach Elasticsearch"**
+
+Elasticsearch is not running or still starting. Wait for the health check, then retry:
+
+```bash
+docker compose up -d elasticsearch
+curl http://localhost:9200/_cluster/health
+```
+
+**Indexing fails / embedding errors**
+
+Ollama is not running on the host or `nomic-embed-text` is not pulled:
+
+```bash
+ollama serve          # if not already running
+ollama pull nomic-embed-text
+```
+
+**Search returns empty results**
+
+The index may not be built yet:
+
+```bash
+docker compose exec app php artisan assets:index --seed
+```
