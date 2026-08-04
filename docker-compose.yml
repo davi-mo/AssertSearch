@@ -8,17 +8,23 @@ services:
     volumes:
       - .:/var/www/html
       - /var/www/html/vendor
-    environment:
+    environment: &app-env
       APP_ENV: local
       APP_DEBUG: "true"
       APP_URL: http://localhost:${APP_PORT:-8000}
       DB_CONNECTION: sqlite
       DB_DATABASE: /var/www/html/database/database.sqlite
+      AI_EMBEDDINGS_PROVIDER: embeddings
       EMBEDDING_BASE_URL: http://host.docker.internal:11434/v1
       EMBEDDING_MODEL: nomic-embed-text
       EMBEDDING_DIMENSIONS: "768"
+      ELASTICSEARCH_HOST: http://elasticsearch:9200
+      ELASTICSEARCH_INDEX: assets
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
 
   queue:
     build:
@@ -28,16 +34,34 @@ services:
       - .:/var/www/html
       - /var/www/html/vendor
     environment:
-      APP_ENV: local
-      APP_DEBUG: "true"
-      DB_CONNECTION: sqlite
-      DB_DATABASE: /var/www/html/database/database.sqlite
+      <<: *app-env
       QUEUE_CONNECTION: database
-      EMBEDDING_BASE_URL: http://host.docker.internal:11434/v1
-      EMBEDDING_MODEL: nomic-embed-text
-      EMBEDDING_DIMENSIONS: "768"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     command: php artisan queue:work --tries=3 --timeout=120
     depends_on:
-      - app
+      app:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.4.0
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      xpack.security.http.ssl.enabled: "false"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    ports:
+      - "${ELASTICSEARCH_PORT:-9200}:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 30s
+
+volumes:
+  elasticsearch-data:
