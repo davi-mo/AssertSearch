@@ -1,0 +1,552 @@
+[
+    {
+        "id": "ast_1001",
+        "name": "Q3_deck_FINAL_v2",
+        "description": "A quarterly business review deck: revenue against target by region, a churn breakdown for enterprise accounts, and a closing slide of headcount plans for the next two quarters."
+    },
+    {
+        "id": "ast_1002",
+        "name": "Q1_review_draft",
+        "description": "First-quarter performance summary comparing ARR growth in EMEA versus North America, including pipeline coverage ratios and forecast accuracy notes."
+    },
+    {
+        "id": "ast_1003",
+        "name": "board_pack_march",
+        "description": "Board presentation covering gross margin trends, sales efficiency metrics, and capital allocation priorities for product investment."
+    },
+    {
+        "id": "ast_1004",
+        "name": "Q4_closeout_v3",
+        "description": "Year-end review highlighting renewal rates, expansion revenue by segment, and operational risks entering the next fiscal year."
+    },
+    {
+        "id": "ast_1005",
+        "name": "APAC_QBR_slides",
+        "description": "Regional quarterly review for Asia-Pacific with country-level bookings, partner contribution, and localization roadmap milestones."
+    },
+    {
+        "id": "ast_1006",
+        "name": "exec_summary_Q2",
+        "description": "Executive summary of second-quarter results: net revenue retention, customer acquisition cost payback, and strategic bets for H2."
+    },
+    {
+        "id": "ast_1007",
+        "name": "finance_review_deck",
+        "description": "Finance-led quarterly review with variance analysis on OPEX, headcount spend versus plan, and cash runway projections."
+    },
+    {
+        "id": "ast_1008",
+        "name": "sales_QBR_2026",
+        "description": "Sales quarterly business review showing quota attainment, win-loss themes, and competitive displacement stories from enterprise deals."
+    },
+    {
+        "id": "ast_1009",
+        "name": "ops_review_Q3",
+        "description": "Operations review covering support ticket volume, SLA adherence, and process improvements tied to customer onboarding throughput."
+    },
+    {
+        "id": "ast_1010",
+        "name": "regional_scorecard",
+        "description": "Scorecard comparing regional leaders on revenue, churn, and expansion metrics with commentary on underperforming territories."
+    },
+    {
+        "id": "ast_1011",
+        "name": "Q3_narrative_doc",
+        "description": "Narrative companion to the Q3 deck explaining strategic context behind revenue misses in two enterprise accounts."
+    },
+    {
+        "id": "ast_1012",
+        "name": "investor_update_Q2",
+        "description": "Investor-facing quarterly update summarizing growth efficiency, product milestones, and planned team expansion in engineering."
+    },
+    {
+        "id": "ast_2001",
+        "name": "IMG_4829",
+        "description": "People operations plan outlining open requisitions for platform engineering, expected start dates, and recruiting funnel conversion rates."
+    },
+    {
+        "id": "ast_2002",
+        "name": "headcount_model_v4",
+        "description": "Spreadsheet-backed headcount model projecting FTE growth by department, including backfills and new role approvals for the next two quarters."
+    },
+    {
+        "id": "ast_2003",
+        "name": "talent_pipeline_Q3",
+        "description": "Recruiting pipeline report with candidate stages for senior backend roles, time-to-fill trends, and offer acceptance rates."
+    },
+    {
+        "id": "ast_2004",
+        "name": "org_design_notes",
+        "description": "Organizational design memo proposing a new customer success pod structure and manager ratios across regions."
+    },
+    {
+        "id": "ast_2005",
+        "name": "campus_recruiting_plan",
+        "description": "University recruiting strategy listing target schools, internship cohort size, and campus event calendar for engineering hires."
+    },
+    {
+        "id": "ast_2006",
+        "name": "comp_benchmark_2026",
+        "description": "Compensation benchmarking study comparing salary bands for product managers and staff engineers against market medians."
+    },
+    {
+        "id": "ast_2007",
+        "name": "onboarding_checklist_hr",
+        "description": "HR onboarding checklist covering equipment provisioning, compliance training, and first-week goals for new employees."
+    },
+    {
+        "id": "ast_2008",
+        "name": "referral_program_brief",
+        "description": "Employee referral program overview with bonus tiers, eligibility rules, and quarterly participation statistics."
+    },
+    {
+        "id": "ast_2009",
+        "name": "workforce_planning_deck",
+        "description": "Workforce planning presentation linking revenue targets to required staffing levels in sales development and customer support."
+    },
+    {
+        "id": "ast_2010",
+        "name": "diversity_report_internal",
+        "description": "Internal diversity and inclusion metrics report with representation breakdowns by level and hiring source channels."
+    },
+    {
+        "id": "ast_2011",
+        "name": "contractor_policy_update",
+        "description": "Updated policy on contractor usage, approval thresholds, and conversion paths to full-time employment."
+    },
+    {
+        "id": "ast_2012",
+        "name": "manager_training_guide",
+        "description": "Guide for new managers covering performance review cycles, calibration expectations, and career ladder conversations."
+    },
+    {
+        "id": "ast_2013",
+        "name": "team_expansion_memo",
+        "description": "Memo requesting approval to expand the data platform team by four engineers to support real-time analytics initiatives."
+    },
+    {
+        "id": "ast_3001",
+        "name": "churn_analysis_FY26",
+        "description": "Enterprise churn analysis segmented by industry, contract size, and primary cancellation reasons cited in exit interviews."
+    },
+    {
+        "id": "ast_3002",
+        "name": "logo_retention_study",
+        "description": "Logo retention study tracking enterprise accounts at risk due to low product adoption scores and executive sponsor turnover."
+    },
+    {
+        "id": "ast_3003",
+        "name": "renewal_risk_dashboard",
+        "description": "Dashboard specification for renewal risk scoring using usage telemetry, support escalations, and payment delays."
+    },
+    {
+        "id": "ast_3004",
+        "name": "save_playbook_v2",
+        "description": "Customer save playbook describing intervention steps for accounts showing declining weekly active users before renewal."
+    },
+    {
+        "id": "ast_3005",
+        "name": "cancellation_survey_results",
+        "description": "Aggregated results from enterprise cancellation surveys highlighting pricing, missing features, and integration gaps."
+    },
+    {
+        "id": "ast_3006",
+        "name": "NRR_bridge_chart",
+        "description": "Net revenue retention bridge chart decomposing churn, contraction, expansion, and new revenue contributions."
+    },
+    {
+        "id": "ast_3007",
+        "name": "account_health_model",
+        "description": "Account health model combining NPS responses, feature breadth, and executive engagement into a single risk score."
+    },
+    {
+        "id": "ast_3008",
+        "name": "churn_postmortem_acme",
+        "description": "Postmortem on a lost enterprise account detailing procurement delays, security review failures, and champion departure."
+    },
+    {
+        "id": "ast_3009",
+        "name": "contraction_tracker",
+        "description": "Tracker of seat downgrades and module removals among mid-market customers during the last two quarters."
+    },
+    {
+        "id": "ast_3010",
+        "name": "retention_okrs",
+        "description": "OKRs for the customer success organization focused on gross retention, onboarding time-to-value, and escalation reduction."
+    },
+    {
+        "id": "ast_3011",
+        "name": "winback_campaign_plan",
+        "description": "Plan to win back churned enterprise logos with targeted outreach, product roadmap previews, and executive briefings."
+    },
+    {
+        "id": "ast_3012",
+        "name": "usage_churn_correlation",
+        "description": "Analysis correlating feature usage drops in the first 90 days with eventual logo churn in enterprise segments."
+    },
+    {
+        "id": "ast_4001",
+        "name": "brand_guidelines_2026",
+        "description": "Brand guidelines defining logo clear space, primary color palette, typography pairings, and tone-of-voice principles for external communications."
+    },
+    {
+        "id": "ast_4002",
+        "name": "campaign_brief_spring",
+        "description": "Creative brief for a spring product launch campaign including audience personas, channel mix, and success metrics."
+    },
+    {
+        "id": "ast_4003",
+        "name": "social_templates_pack",
+        "description": "Template pack for social media posts with approved layouts for announcements, customer quotes, and event promotion."
+    },
+    {
+        "id": "ast_4004",
+        "name": "website_copy_home_v5",
+        "description": "Homepage copy draft emphasizing platform reliability, enterprise security, and customer proof points for conversion optimization."
+    },
+    {
+        "id": "ast_4005",
+        "name": "event_booth_assets",
+        "description": "Trade show booth artwork and messaging hierarchy for a major industry conference demo station."
+    },
+    {
+        "id": "ast_4006",
+        "name": "email_nurture_series",
+        "description": "Nurture email sequence for inbound leads explaining use cases, implementation timelines, and ROI examples."
+    },
+    {
+        "id": "ast_4007",
+        "name": "press_release_template",
+        "description": "Press release template with boilerplate company description, executive quote placeholders, and media contact details."
+    },
+    {
+        "id": "ast_4008",
+        "name": "partner_co_marketing_guide",
+        "description": "Co-marketing guide for technology partners covering joint webinars, MDF requests, and lead sharing rules."
+    },
+    {
+        "id": "ast_4009",
+        "name": "brand_photography_shotlist",
+        "description": "Shot list for brand photography featuring diverse teams in office and remote settings for website refresh."
+    },
+    {
+        "id": "ast_4010",
+        "name": "messaging_house_2026",
+        "description": "Messaging house document aligning value pillars, proof points, and objection handling for sales and marketing teams."
+    },
+    {
+        "id": "ast_4011",
+        "name": "ad_creative_variants",
+        "description": "Paid media creative variants testing headlines focused on productivity, compliance, and integration depth."
+    },
+    {
+        "id": "ast_4012",
+        "name": "customer_advocacy_program",
+        "description": "Customer advocacy program outline for reference calls, case study participation, and advisory board recruitment."
+    },
+    {
+        "id": "ast_5001",
+        "name": "roadmap_H2_draft",
+        "description": "Product roadmap for the second half covering semantic search improvements, admin tooling, and API rate limit changes."
+    },
+    {
+        "id": "ast_5002",
+        "name": "architecture_diagram_search",
+        "description": "Architecture diagram for the asset search index showing ingestion pipeline, embedding service, and vector store interactions."
+    },
+    {
+        "id": "ast_5003",
+        "name": "RFC_realtime_sync",
+        "description": "RFC proposing webhook-based change data capture to keep the search index synchronized with the asset library."
+    },
+    {
+        "id": "ast_5004",
+        "name": "api_versioning_policy",
+        "description": "API versioning policy describing deprecation windows, sunset headers, and compatibility guarantees for integrators."
+    },
+    {
+        "id": "ast_5005",
+        "name": "perf_test_plan_search",
+        "description": "Performance test plan for search endpoints measuring p95 latency under concurrent query load and index rebuild times."
+    },
+    {
+        "id": "ast_5006",
+        "name": "sprint_review_notes_14",
+        "description": "Sprint review notes highlighting shipped indexing fixes, remaining relevance tuning work, and test coverage gaps."
+    },
+    {
+        "id": "ast_5007",
+        "name": "design_spec_filters",
+        "description": "Design specification for faceted filters on search results including subject tags and file type facets."
+    },
+    {
+        "id": "ast_5008",
+        "name": "incident_report_es_cluster",
+        "description": "Incident report for Elasticsearch cluster yellow status including root cause, mitigation steps, and follow-up actions."
+    },
+    {
+        "id": "ast_5009",
+        "name": "mobile_app_backlog",
+        "description": "Backlog grooming notes for mobile app features related to offline asset previews and push notifications."
+    },
+    {
+        "id": "ast_5010",
+        "name": "security_review_embeddings",
+        "description": "Security review of the local embedding model integration covering data residency and outbound network restrictions."
+    },
+    {
+        "id": "ast_5011",
+        "name": "tech_debt_register",
+        "description": "Technical debt register listing legacy import scripts, missing observability on queue workers, and flaky integration tests."
+    },
+    {
+        "id": "ast_5012",
+        "name": "feature_flag_plan",
+        "description": "Feature flag rollout plan for gradual enablement of semantic search to a subset of enterprise tenants."
+    },
+    {
+        "id": "ast_5013",
+        "name": "dev_env_setup_doc",
+        "description": "Developer environment setup documenting Docker services, Ollama model pull commands, and index bootstrap steps."
+    },
+    {
+        "id": "ast_6001",
+        "name": "onboarding_playbook_enterprise",
+        "description": "Enterprise onboarding playbook with kickoff agenda, success criteria, and 30-60-90 day milestone templates."
+    },
+    {
+        "id": "ast_6002",
+        "name": "case_study_acme_corp",
+        "description": "Customer case study describing how Acme Corp reduced time-to-find assets by adopting semantic discovery across marketing and legal teams."
+    },
+    {
+        "id": "ast_6003",
+        "name": "training_video_script",
+        "description": "Script for a customer training video explaining how to search the library using natural language descriptions instead of filenames."
+    },
+    {
+        "id": "ast_6004",
+        "name": "support_macros_search",
+        "description": "Support macro library for troubleshooting search relevance issues, stale results, and missing assets after bulk imports."
+    },
+    {
+        "id": "ast_6005",
+        "name": "QBR_template_cs",
+        "description": "Customer success QBR template with sections for adoption metrics, open risks, and joint success plan updates."
+    },
+    {
+        "id": "ast_6006",
+        "name": "health_score_guide",
+        "description": "Guide explaining how customer health scores are calculated from login frequency, search usage, and uploaded asset volume."
+    },
+    {
+        "id": "ast_6007",
+        "name": "implementation_checklist",
+        "description": "Implementation checklist for professional services covering SSO setup, metadata mapping, and initial index rebuild."
+    },
+    {
+        "id": "ast_6008",
+        "name": "customer_feedback_themed",
+        "description": "Thematic analysis of customer feedback requests for better relevance ranking and multilingual embedding support."
+    },
+    {
+        "id": "ast_6009",
+        "name": "renewal_prep_workbook",
+        "description": "Workbook for CSMs preparing enterprise renewals with usage summaries, stakeholder maps, and expansion opportunities."
+    },
+    {
+        "id": "ast_6010",
+        "name": "office_hours_slides",
+        "description": "Slides from customer office hours demonstrating advanced search tips and how descriptions influence findability."
+    },
+    {
+        "id": "ast_6011",
+        "name": "pilot_retrospective",
+        "description": "Retrospective from a semantic search pilot noting content quality issues when upstream descriptions were too short."
+    },
+    {
+        "id": "ast_6012",
+        "name": "success_plan_template",
+        "description": "Joint success plan template aligning customer business outcomes with product configuration and training milestones."
+    },
+    {
+        "id": "ast_7001",
+        "name": "data_processing_addendum",
+        "description": "Data processing addendum outlining subprocessors, retention periods, and cross-border transfer mechanisms for enterprise customers."
+    },
+    {
+        "id": "ast_7002",
+        "name": "retention_policy_v3",
+        "description": "Records retention policy specifying how long asset metadata and audit logs must be kept for regulatory compliance."
+    },
+    {
+        "id": "ast_7003",
+        "name": "privacy_impact_assessment",
+        "description": "Privacy impact assessment for indexing asset descriptions that may contain personal data entered by end users."
+    },
+    {
+        "id": "ast_7004",
+        "name": "vendor_security_review",
+        "description": "Third-party vendor security review checklist covering SOC 2 evidence, penetration test summaries, and incident response SLAs."
+    },
+    {
+        "id": "ast_7005",
+        "name": "acceptable_use_policy",
+        "description": "Acceptable use policy prohibiting storage of unapproved sensitive categories and describing enforcement workflows."
+    },
+    {
+        "id": "ast_7006",
+        "name": "gdpr_dsar_runbook",
+        "description": "Runbook for handling GDPR data subject access requests including search index deletion steps and verification."
+    },
+    {
+        "id": "ast_7007",
+        "name": "contract_template_msa",
+        "description": "Master services agreement template with liability caps, uptime commitments, and audit rights for enterprise buyers."
+    },
+    {
+        "id": "ast_7008",
+        "name": "legal_hold_procedure",
+        "description": "Legal hold procedure explaining how assets under litigation holds must be excluded from automated deletion jobs."
+    },
+    {
+        "id": "ast_7009",
+        "name": "export_control_memo",
+        "description": "Memo summarizing export control considerations for customers uploading technical documentation with dual-use implications."
+    },
+    {
+        "id": "ast_7010",
+        "name": "compliance_training_2026",
+        "description": "Annual compliance training deck covering phishing awareness, data classification, and incident reporting obligations."
+    },
+    {
+        "id": "ast_7011",
+        "name": "audit_log_spec",
+        "description": "Specification for immutable audit logs capturing asset create, update, delete, and search access events."
+    },
+    {
+        "id": "ast_7012",
+        "name": "subprocessor_list",
+        "description": "Published list of subprocessors including cloud hosting, email delivery, and observability vendors with data locations."
+    },
+    {
+        "id": "ast_8001",
+        "name": "budget_forecast_2027",
+        "description": "Annual budget forecast projecting infrastructure spend, vendor renewals, and cloud cost optimization initiatives."
+    },
+    {
+        "id": "ast_8002",
+        "name": "procurement_policy",
+        "description": "Procurement policy defining approval thresholds, preferred vendors, and exception handling for software purchases."
+    },
+    {
+        "id": "ast_8003",
+        "name": "invoice_reconciliation_sop",
+        "description": "Standard operating procedure for reconciling vendor invoices against purchase orders and usage-based billing statements."
+    },
+    {
+        "id": "ast_8004",
+        "name": "facilities_move_plan",
+        "description": "Facilities move plan for office consolidation including desk allocation, AV setup, and visitor access updates."
+    },
+    {
+        "id": "ast_8005",
+        "name": "travel_expense_guidelines",
+        "description": "Travel and expense guidelines with per-diem rates, approval requirements, and sustainability preferences for flights."
+    },
+    {
+        "id": "ast_8006",
+        "name": "vendor_scorecard_q3",
+        "description": "Vendor scorecard rating critical suppliers on cost, support responsiveness, and contract compliance during Q3."
+    },
+    {
+        "id": "ast_8007",
+        "name": "capacity_planning_infra",
+        "description": "Infrastructure capacity planning model forecasting storage growth from asset uploads and embedding index size."
+    },
+    {
+        "id": "ast_8008",
+        "name": "insurance_renewal_summary",
+        "description": "Summary of cyber insurance renewal terms, coverage limits, and required security controls for policy compliance."
+    },
+    {
+        "id": "ast_8009",
+        "name": "cost_allocation_model",
+        "description": "Cost allocation model distributing shared platform expenses across business units using usage-based drivers."
+    },
+    {
+        "id": "ast_8010",
+        "name": "business_continuity_plan",
+        "description": "Business continuity plan outlining RTO/RPO targets, failover regions, and communication trees for major outages."
+    },
+    {
+        "id": "ast_8011",
+        "name": "inventory_asset_tags",
+        "description": "Procedure for tagging laptops and monitors with asset labels linked to the internal hardware inventory system."
+    },
+    {
+        "id": "ast_8012",
+        "name": "saas_renewal_calendar",
+        "description": "Calendar of upcoming SaaS renewals with owners, notice periods, and negotiation notes for cost reduction."
+    },
+    {
+        "id": "ast_9001",
+        "name": "vacation_policy_final",
+        "description": "Security audit findings from the annual penetration test with remediation owners and target completion dates."
+    },
+    {
+        "id": "ast_9002",
+        "name": "hiring_plan_slide",
+        "description": "Ingredient list and nutritional information for the cafeteria menu redesign pilot — not related to staffing."
+    },
+    {
+        "id": "ast_9003",
+        "name": "churn_deck_v1",
+        "description": "Photography mood board for the rebranded customer conference stage backdrop and signage concepts."
+    },
+    {
+        "id": "ast_9004",
+        "name": "Q3_deck_FINAL_v2_copy",
+        "description": "A quarterly business review deck: revenue against target by region, a churn breakdown for enterprise accounts, and a closing slide of headcount plans for the next two quarters."
+    },
+    {
+        "id": "ast_9005",
+        "name": "misc_notes",
+        "description": "Short note: see other deck."
+    },
+    {
+        "id": "ast_9006",
+        "name": "untitled_document",
+        "description": "Draft."
+    },
+    {
+        "id": "ast_9007",
+        "name": "logo_dark_png",
+        "description": "Detailed competitive analysis comparing feature parity, pricing models, and enterprise references for three rival DAM platforms."
+    },
+    {
+        "id": "ast_9008",
+        "name": "enterprise_churn_summary",
+        "description": "Enterprise churn analysis segmented by industry, contract size, and primary cancellation reasons cited in exit interviews."
+    },
+    {
+        "id": "ast_9009",
+        "name": "team_offsite_2026",
+        "description": "Offsite agenda focused on cross-functional collaboration games, dinner reservations, and travel logistics for the leadership team."
+    },
+    {
+        "id": "ast_9010",
+        "name": "search_relevance_notes",
+        "description": "Internal notes on tuning vector similarity thresholds, handling description updates, and measuring recall for semantic retrieval."
+    },
+    {
+        "id": "ast_9011",
+        "name": "backup_restore_test",
+        "description": "Disaster recovery test results verifying Elasticsearch snapshot restore times and SQLite metadata consistency after failover."
+    },
+    {
+        "id": "ast_9012",
+        "name": "archive_do_not_use",
+        "description": "Deprecated import mapping from a 2019 CMS migration; kept for historical reference only and not representative of current assets."
+    }
+]
