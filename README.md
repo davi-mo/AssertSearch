@@ -14,6 +14,16 @@ Semantic search PoC for marketing assets. Asset descriptions are embedded with O
 | `GET /search?q=…` | Top-10 semantic results with scores |
 | `php artisan assets:index --seed` | One command to load sample data and build the index |
 
+### Acceptance criteria
+
+| Criterion | Where it is met |
+|-----------|-----------------|
+| **Lifecycle** — created assets searchable, updated assets searchable by their *current* description, deleted assets not searchable at all | `AssetObserver` → `AssetIndexer`. Verified in `tests/Feature/Indexing/AssetLifecycleTest.php` and end-to-end in `tests/Feature/Search/AssetSearchIntegrationTest.php` |
+| **Smart search** — a query whose words appear in none of the descriptions still returns the right assets | [Example search](#example-search-request-and-response) below, with the full request and response |
+| **Runnable** — one documented command takes sample data through to a searchable index | `php artisan assets:index --seed` |
+
+Search reads only from the Elasticsearch index; it never re-reads SQLite. Verified from a clean `git clone` with no code changes and no undocumented steps.
+
 ### Why these choices
 
 - **SQLite** — zero setup for reviewers; sufficient for a PoC with ~100 assets.
@@ -46,19 +56,27 @@ curl http://localhost:11434/api/tags
 From the project root:
 
 ```bash
-# 1. Start all services (app, queue, elasticsearch)
+# 1. Start all services (app, queue, elasticsearch) — first build takes ~1 min
 docker compose up -d --build
 
-# 2. Load sample assets and build the search index (~110 assets, takes a minute)
+# 2. Load the 110 committed sample assets and build the search index (a few seconds)
 docker compose exec app php artisan assets:index --seed
 
 # 3. Try semantic search
 curl -H 'Accept: application/json' 'http://localhost:8000/search?q=hiring'
 ```
 
-Expected: results about recruiting/headcount even though the word "hiring" does not appear in the asset descriptions.
+### Example search: request and response
 
-### Example response
+This is the acceptance-criteria example — a query whose word appears in none of the top-ranked descriptions.
+
+**Request**
+
+```bash
+curl -H 'Accept: application/json' 'http://localhost:8000/search?q=hiring'
+```
+
+**Response** (verbatim, top 10 by cosine similarity)
 
 ```json
 {
@@ -69,10 +87,66 @@ Expected: results about recruiting/headcount even though the word "hiring" does 
       "name": "campus_recruiting_plan",
       "description": "University recruiting strategy listing target schools, internship cohort size, and campus event calendar for engineering hires.",
       "score": 0.79975593
+    },
+    {
+      "id": "ast_2003",
+      "name": "talent_pipeline_Q3",
+      "description": "Recruiting pipeline report with candidate stages for senior backend roles, time-to-fill trends, and offer acceptance rates.",
+      "score": 0.78267515
+    },
+    {
+      "id": "ast_2001",
+      "name": "IMG_4829",
+      "description": "People operations plan outlining open requisitions for platform engineering, expected start dates, and recruiting funnel conversion rates.",
+      "score": 0.78266764
+    },
+    {
+      "id": "ast_9006",
+      "name": "untitled_document",
+      "description": "Draft.",
+      "score": 0.7731676
+    },
+    {
+      "id": "ast_2007",
+      "name": "onboarding_checklist_hr",
+      "description": "HR onboarding checklist covering equipment provisioning, compliance training, and first-week goals for new employees.",
+      "score": 0.7661486
+    },
+    {
+      "id": "ast_2011",
+      "name": "contractor_policy_update",
+      "description": "Updated policy on contractor usage, approval thresholds, and conversion paths to full-time employment.",
+      "score": 0.76613533
+    },
+    {
+      "id": "ast_2009",
+      "name": "workforce_planning_deck",
+      "description": "Workforce planning presentation linking revenue targets to required staffing levels in sales development and customer support.",
+      "score": 0.7595037
+    },
+    {
+      "id": "ast_2008",
+      "name": "referral_program_brief",
+      "description": "Employee referral program overview with bonus tiers, eligibility rules, and quarterly participation statistics.",
+      "score": 0.75614357
+    },
+    {
+      "id": "ast_2010",
+      "name": "diversity_report_internal",
+      "description": "Internal diversity and inclusion metrics report with representation breakdowns by level and hiring source channels.",
+      "score": 0.7481712
+    },
+    {
+      "id": "ast_4009",
+      "name": "brand_photography_shotlist",
+      "description": "Shot list for brand photography featuring diverse teams in office and remote settings for website refresh.",
+      "score": 0.74626607
     }
   ]
 }
 ```
+
+**Why this demonstrates semantic search:** none of the top eight descriptions contain the word "hiring". They are matched on meaning — recruiting, headcount, requisitions, workforce planning. The only description that *does* contain the literal word ("hiring source channels", `ast_2010`) ranks 9th, below eight purely semantic matches. Note also `ast_2001`, whose name is `IMG_4829` — a meaningless filename that keyword search could never find.
 
 ## Running tests
 
@@ -167,9 +241,18 @@ Asset (SQLite)
 GET /search?q=… → AssetSearchService → embed query → kNN search → JSON
 ```
 
-- **Embeddings:** Laravel AI SDK → OpenAI-compatible Ollama API (`nomic-embed-text`, 768 dims)
+- **Embeddings:** Laravel AI SDK → OpenAI-compatible Ollama API (`nomic-embed-text`, 768 dims), configured from `EMBEDDING_BASE_URL`, `EMBEDDING_MODEL`, and `EMBEDDING_DIMENSIONS`
 - **Search:** Elasticsearch kNN on the `embedding` dense_vector field
 - **Lifecycle:** create/update/delete on `Asset` syncs the index automatically
+
+## Known limitations
+
+Stated plainly rather than hidden:
+
+- **Thin descriptions rank noisily.** `ast_9006` ("Draft.") lands 4th for `?q=hiring` purely because a near-empty string produces an unhelpful vector. This is a deliberate edge case in the sample data. A minimum-score threshold or a length guard at index time would filter it.
+- **`name` is stored but not embedded.** Only `description` is vectorised, per the assignment. Names are returned in results but do not influence ranking. Embedding `name + description` together, or scoring them separately and blending, would likely improve recall for the cases where names *are* meaningful.
+- **Indexing is synchronous.** The observer embeds and upserts inside the request/command. Fine at 110 assets; it would need the queue at scale.
+- **No retry or dead-lettering.** If Ollama or Elasticsearch is down mid-write, that asset silently misses the index until the next full `assets:index` run.
 
 ## Out of scope / next steps
 
