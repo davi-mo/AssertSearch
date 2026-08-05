@@ -3,22 +3,18 @@
 use App\Models\Asset;
 use App\Services\Search\AssetSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-
-use function Tests\Support\bindInMemoryAssetSearchIndex;
-use function Tests\Support\fakeEmbeddingsFromMap;
-use function Tests\Support\mockElasticsearchConnection;
-use function Tests\Support\unitVector;
+use Tests\Support\SearchTestHelpers;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    bindInMemoryAssetSearchIndex();
+    SearchTestHelpers::bindInMemoryAssetSearchIndex();
 });
 
 it('finds indexed assets through the search service after indexing', function () {
-    fakeEmbeddingsFromMap([
-        'Recruiting pipeline and headcount plans.' => unitVector(0),
-        'hiring' => unitVector(0),
+    SearchTestHelpers::fakeEmbeddingsFromMap([
+        'Recruiting pipeline and headcount plans.' => SearchTestHelpers::unitVector(0),
+        'hiring' => SearchTestHelpers::unitVector(0),
     ]);
 
     Asset::query()->create([
@@ -36,9 +32,9 @@ it('finds indexed assets through the search service after indexing', function ()
 });
 
 it('returns no results when nothing in the index matches the query', function () {
-    fakeEmbeddingsFromMap([
-        'Quarterly revenue and margin report.' => unitVector(1),
-        'hiring' => unitVector(0),
+    SearchTestHelpers::fakeEmbeddingsFromMap([
+        'Quarterly revenue and margin report.' => SearchTestHelpers::unitVector(1),
+        'hiring' => SearchTestHelpers::unitVector(0),
     ]);
 
     Asset::query()->create([
@@ -51,9 +47,9 @@ it('returns no results when nothing in the index matches the query', function ()
 });
 
 it('does not return deleted assets in search results', function () {
-    fakeEmbeddingsFromMap([
-        'Recruiting pipeline and headcount plans.' => unitVector(0),
-        'hiring' => unitVector(0),
+    SearchTestHelpers::fakeEmbeddingsFromMap([
+        'Recruiting pipeline and headcount plans.' => SearchTestHelpers::unitVector(0),
+        'hiring' => SearchTestHelpers::unitVector(0),
     ]);
 
     $asset = Asset::query()->create([
@@ -70,10 +66,10 @@ it('does not return deleted assets in search results', function () {
 });
 
 it('returns the updated description after an asset is reindexed', function () {
-    fakeEmbeddingsFromMap([
-        'Original churn summary.' => unitVector(0),
-        'Updated headcount and hiring plan.' => unitVector(1),
-        'hiring' => unitVector(1),
+    SearchTestHelpers::fakeEmbeddingsFromMap([
+        'Original churn summary.' => SearchTestHelpers::unitVector(0),
+        'Updated headcount and hiring plan.' => SearchTestHelpers::unitVector(1),
+        'hiring' => SearchTestHelpers::unitVector(1),
     ]);
 
     $asset = Asset::query()->create([
@@ -93,11 +89,11 @@ it('returns the updated description after an asset is reindexed', function () {
 });
 
 it('returns search results over http after indexing an asset', function () {
-    mockElasticsearchConnection(isAvailable: true);
+    SearchTestHelpers::mockElasticsearchConnection(isAvailable: true);
 
-    fakeEmbeddingsFromMap([
-        'Recruiting pipeline and headcount plans.' => unitVector(0),
-        'hiring' => unitVector(0),
+    SearchTestHelpers::fakeEmbeddingsFromMap([
+        'Recruiting pipeline and headcount plans.' => SearchTestHelpers::unitVector(0),
+        'hiring' => SearchTestHelpers::unitVector(0),
     ]);
 
     Asset::query()->create([

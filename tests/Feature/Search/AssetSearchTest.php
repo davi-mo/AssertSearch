@@ -2,13 +2,12 @@
 
 use App\Services\Search\AssetSearchService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-
-use function Tests\Support\mockElasticsearchConnection;
+use Tests\Support\SearchTestHelpers;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    mockElasticsearchConnection(isAvailable: true);
+    SearchTestHelpers::mockElasticsearchConnection(isAvailable: true);
 });
 
 it('requires a search query', function () {
@@ -114,7 +113,7 @@ it('returns an empty result set when nothing matches', function () {
 });
 
 it('returns a service unavailable response when elasticsearch is down', function () {
-    mockElasticsearchConnection(isAvailable: false);
+    SearchTestHelpers::mockElasticsearchConnection(isAvailable: false);
 
     $this->getJson('/search?q=hiring')
         ->assertServiceUnavailable()

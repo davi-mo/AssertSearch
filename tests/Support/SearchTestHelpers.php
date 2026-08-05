@@ -10,71 +10,74 @@ use Laravel\Ai\Responses\Data\Meta;
 use Laravel\Ai\Responses\EmbeddingsResponse;
 use Mockery;
 
-/**
- * @return array<int, float>
- */
-function unitVector(int $activeIndex, int $dimensions = 768): array
+final class SearchTestHelpers
 {
-    $vector = array_fill(0, $dimensions, 0.0);
-    $vector[$activeIndex] = 1.0;
+    /**
+     * @return array<int, float>
+     */
+    public static function unitVector(int $activeIndex, int $dimensions = 768): array
+    {
+        $vector = array_fill(0, $dimensions, 0.0);
+        $vector[$activeIndex] = 1.0;
 
-    return $vector;
-}
+        return $vector;
+    }
 
-function bindInMemoryAssetSearchIndex(): InMemorySearchStore
-{
-    $store = new InMemorySearchStore;
+    public static function bindInMemoryAssetSearchIndex(): InMemorySearchStore
+    {
+        $store = new InMemorySearchStore;
 
-    $index = Mockery::mock(AssetSearchIndex::class);
-    $index->shouldReceive('ensureIndex')->byDefault()->andReturnNull();
-    $index->shouldReceive('upsert')->andReturnUsing(
-        function (string $assetId, string $name, string $description, array $embedding) use ($store): void {
-            $store->upsert($assetId, $name, $description, $embedding);
-        }
-    );
-    $index->shouldReceive('delete')->andReturnUsing(
-        function (string $assetId) use ($store): void {
-            $store->delete($assetId);
-        }
-    );
-    $index->shouldReceive('search')->andReturnUsing(
-        fn (array $queryVector, int $limit = 10): array => $store->search($queryVector, $limit)
-    );
-
-    app()->instance(AssetSearchIndex::class, $index);
-
-    return $store;
-}
-
-/**
- * @param  array<string, array<int, float>>  $vectorsByText
- */
-function fakeEmbeddingsFromMap(array $vectorsByText): void
-{
-    Embeddings::fake(function (EmbeddingsPrompt $prompt) use ($vectorsByText): EmbeddingsResponse {
-        $embeddings = array_map(
-            function (string $input) use ($vectorsByText): array {
-                if (array_key_exists($input, $vectorsByText)) {
-                    return $vectorsByText[$input];
-                }
-
-                return unitVector(767);
-            },
-            $prompt->inputs,
+        $index = Mockery::mock(AssetSearchIndex::class);
+        $index->shouldReceive('ensureIndex')->byDefault()->andReturnNull();
+        $index->shouldReceive('upsert')->andReturnUsing(
+            function (string $assetId, string $name, string $description, array $embedding) use ($store): void {
+                $store->upsert($assetId, $name, $description, $embedding);
+            }
+        );
+        $index->shouldReceive('delete')->andReturnUsing(
+            function (string $assetId) use ($store): void {
+                $store->delete($assetId);
+            }
+        );
+        $index->shouldReceive('search')->andReturnUsing(
+            fn (array $queryVector, int $limit = 10): array => $store->search($queryVector, $limit)
         );
 
-        return new EmbeddingsResponse(
-            $embeddings,
-            count($embeddings),
-            new Meta('embeddings', 'nomic-embed-text'),
-        );
-    });
-}
+        app()->instance(AssetSearchIndex::class, $index);
 
-function mockElasticsearchConnection(bool $isAvailable): void
-{
-    $connection = Mockery::mock(ElasticsearchConnection::class);
-    $connection->shouldReceive('isAvailable')->andReturn($isAvailable);
+        return $store;
+    }
 
-    app()->instance(ElasticsearchConnection::class, $connection);
+    /**
+     * @param  array<string, array<int, float>>  $vectorsByText
+     */
+    public static function fakeEmbeddingsFromMap(array $vectorsByText): void
+    {
+        Embeddings::fake(function (EmbeddingsPrompt $prompt) use ($vectorsByText): EmbeddingsResponse {
+            $embeddings = array_map(
+                function (string $input) use ($vectorsByText): array {
+                    if (array_key_exists($input, $vectorsByText)) {
+                        return $vectorsByText[$input];
+                    }
+
+                    return self::unitVector(767);
+                },
+                $prompt->inputs,
+            );
+
+            return new EmbeddingsResponse(
+                $embeddings,
+                count($embeddings),
+                new Meta('embeddings', 'nomic-embed-text'),
+            );
+        });
+    }
+
+    public static function mockElasticsearchConnection(bool $isAvailable): void
+    {
+        $connection = Mockery::mock(ElasticsearchConnection::class);
+        $connection->shouldReceive('isAvailable')->andReturn($isAvailable);
+
+        app()->instance(ElasticsearchConnection::class, $connection);
+    }
 }
