@@ -7,7 +7,7 @@
 .phpunit.result.cache
 /.codex
 /.cursor/
-/.junie/mcp/
+/.junie/
 /.idea
 /.nova
 /.phpunit.cache
@@ -26,4 +26,6 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+/AGENTS.md
+/boost.json
 /database/data/sample_assets.php

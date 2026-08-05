@@ -99,9 +99,10 @@ php artisan test --compact tests/Feature/Search/
 php artisan test --compact --filter="deleted assets"
 ```
 
-All **33 tests** should pass. Coverage includes:
+All **32 tests** should pass. Coverage includes:
 
 - Search endpoint validation, empty results, and ES-unavailable 503
+- Root health/info JSON endpoint
 - Index → search happy path (service + HTTP)
 - Lifecycle sync: create, re-index on update, remove on delete
 - Deleted assets absent from search; updated descriptions reflected in results
@@ -154,6 +155,7 @@ php artisan assets:index --seed
 | `docker compose exec app php artisan assets:index --seed` | Seed DB + index assets |
 | `docker compose exec app php artisan assets:index` | Re-index existing assets |
 | `docker compose exec app php artisan test --compact` | Run test suite |
+| `curl 'http://localhost:8000/'` | Service info JSON |
 | `curl 'http://localhost:8000/search?q=hiring'` | Search endpoint |
 
 ## Architecture
