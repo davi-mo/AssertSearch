@@ -2,6 +2,26 @@
 
 Semantic search PoC for marketing assets. Asset descriptions are embedded with Ollama (`nomic-embed-text`), stored in Elasticsearch, and queried via a natural-language search endpoint.
 
+## What was built
+
+| Piece | Role |
+|-------|------|
+| `Asset` model + SQLite | Source of truth for asset metadata |
+| `AssetObserver` | Keeps the search index in sync on create/update/delete |
+| `AssetIndexer` | Embeds descriptions and upserts/removes documents |
+| `AssetSearchIndex` | Elasticsearch index management + kNN search |
+| `AssetSearchService` | Embeds the query and maps ES hits to JSON |
+| `GET /search?q=…` | Top-10 semantic results with scores |
+| `php artisan assets:index --seed` | One command to load sample data and build the index |
+
+### Why these choices
+
+- **SQLite** — zero setup for reviewers; sufficient for a PoC with ~100 assets.
+- **Ollama + `nomic-embed-text`** — local, free embeddings via an OpenAI-compatible API; wired through Laravel AI SDK.
+- **Elasticsearch kNN** — purpose-built for vector similarity at small scale; no custom ranking logic needed.
+- **Synchronous observer indexing** — simplest lifecycle sync for a PoC; a queue worker is included in Docker for a future async path.
+- **Mocked external services in tests** — tests run without Ollama or Elasticsearch; integration tests use an in-memory index with deterministic vectors.
+
 ## Prerequisites
 
 | Tool | Version | Notes |
@@ -75,11 +95,17 @@ php artisan test --compact
 Run a single file or test:
 
 ```bash
-php artisan test --compact tests/Feature/Search/AssetSearchTest.php
-php artisan test --compact --filter="semantic matches"
+php artisan test --compact tests/Feature/Search/
+php artisan test --compact --filter="deleted assets"
 ```
 
-All **27 tests** should pass.
+All **33 tests** should pass. Coverage includes:
+
+- Search endpoint validation, empty results, and ES-unavailable 503
+- Index → search happy path (service + HTTP)
+- Lifecycle sync: create, re-index on update, remove on delete
+- Deleted assets absent from search; updated descriptions reflected in results
+- Index command, seeder, model, and unit tests for core services
 
 ## Environment setup details
 
@@ -140,8 +166,26 @@ GET /search?q=… → AssetSearchService → embed query → kNN search → JSON
 ```
 
 - **Embeddings:** Laravel AI SDK → OpenAI-compatible Ollama API (`nomic-embed-text`, 768 dims)
-- **Search:** Elasticsearch kNN on `description_vector`
+- **Search:** Elasticsearch kNN on the `embedding` dense_vector field
 - **Lifecycle:** create/update/delete on `Asset` syncs the index automatically
+
+## Out of scope / next steps
+
+Intentionally skipped for this PoC:
+
+- Authentication and authorization
+- Frontend UI
+- Production deployment and CI pipeline
+- Pagination, filtering, or hybrid BM25 + vector search
+- Async indexing via the queue worker (container is ready; observer still indexes synchronously)
+
+If this were going to production, next steps would be:
+
+1. **Queue indexing jobs** — move embed + upsert off the request/observer path
+2. **Hybrid retrieval** — combine keyword (BM25) and vector scores for better recall
+3. **Relevance tuning** — minimum score threshold, reranking, query expansion
+4. **Observability** — index lag metrics, embedding latency, search quality evals
+5. **CI integration test** — optional smoke test against real ES + Ollama in a pipeline
 
 ## Troubleshooting
 
