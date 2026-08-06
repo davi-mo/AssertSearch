@@ -2,6 +2,8 @@
 
 Semantic search PoC for marketing assets. Asset descriptions are embedded with Ollama (`nomic-embed-text`), stored in Elasticsearch, and queried via a natural-language search endpoint.
 
+**AI usage:** This project was built with Cursor as a pair-programming tool. See [AI_USAGE.md](AI_USAGE.md) for prompts, models, and how output was verified.
+
 ## What was built
 
 | Piece | Role |
