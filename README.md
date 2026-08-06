@@ -20,7 +20,7 @@ Semantic search PoC for marketing assets. Asset descriptions are embedded with O
 
 | Criterion | Where it is met |
 |-----------|-----------------|
-| **Lifecycle** — created assets searchable, updated assets searchable by their *current* description, deleted assets not searchable at all | `AssetObserver` → `AssetIndexer`. Verified in `tests/Feature/Indexing/AssetLifecycleTest.php` and end-to-end in `tests/Feature/Search/AssetSearchIntegrationTest.php` |
+| **Lifecycle** — created assets searchable, updated assets searchable by their *current* description, deleted assets not searchable at all | `AssetObserver` → `AssetIndexer`. Observer wiring in `tests/Feature/Indexing/AssetLifecycleTest.php`; search behaviour (including delete/update) in `tests/Feature/Search/AssetSearchIntegrationTest.php` using an in-memory index. Live stack verified manually with `curl` |
 | **Smart search** — a query whose words appear in none of the descriptions still returns the right assets | [Example search](#example-search-request-and-response) below, with the full request and response |
 | **Runnable** — one documented command takes sample data through to a searchable index | `php artisan assets:index --seed` |
 
@@ -61,7 +61,7 @@ From the project root:
 # 1. Start all services (app, queue, elasticsearch) — first build takes ~1 min
 docker compose up -d --build
 
-# 2. Load the 110 committed sample assets and build the search index (a few seconds)
+# 2. Load the 110 committed sample assets and build the search index (~1–2 min; Ollama embeds each description)
 docker compose exec app php artisan assets:index --seed
 
 # 3. Try semantic search
@@ -78,7 +78,7 @@ This is the acceptance-criteria example — a query whose word appears in none o
 curl -H 'Accept: application/json' 'http://localhost:8000/search?q=hiring'
 ```
 
-**Response** (verbatim, top 10 by Elasticsearch kNN `_score`)
+**Response** (representative output from a live index; ranking is stable, scores may vary slightly by Ollama/ES version)
 
 Scores are Elasticsearch's normalized cosine score — `(1 + cosine) / 2`, mapped to `[0, 1]`. They rank results correctly but are not raw cosine values (e.g. `0.7998` ≈ cosine `0.60`).
 
@@ -162,7 +162,7 @@ Tests use an in-memory SQLite database and mock Elasticsearch/Ollama — **no ex
 docker compose exec app php artisan test --compact
 ```
 
-**On the host** (requires PHP 8.4+ and `composer install`):
+**On the host** (requires PHP 8.3+, 8.4 in Docker; run `composer install` first):
 
 ```bash
 composer test
@@ -253,6 +253,7 @@ GET /search?q=… → AssetSearchService → embed query → kNN search → JSON
 
 Stated plainly rather than hidden:
 
+- **Re-embeds on every save.** The observer runs on any `saved` event, including a rename with an unchanged description — one extra Ollama call per write. A `wasChanged('description')` guard would skip that.
 - **Thin descriptions rank noisily.** `ast_9006` ("Draft.") lands 4th for `?q=hiring` purely because a near-empty string produces an unhelpful vector. This is a deliberate edge case in the sample data. A minimum-score threshold or a length guard at index time would filter it.
 - **`name` is stored but not embedded.** Only `description` is vectorised, per the assignment. Names are returned in results but do not influence ranking. Embedding `name + description` together, or scoring them separately and blending, would likely improve recall for the cases where names *are* meaningful.
 - **Indexing is synchronous.** The observer embeds and upserts inside the request/command. Fine at 110 assets; it would need the queue at scale.
