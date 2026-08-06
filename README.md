@@ -78,7 +78,9 @@ This is the acceptance-criteria example — a query whose word appears in none o
 curl -H 'Accept: application/json' 'http://localhost:8000/search?q=hiring'
 ```
 
-**Response** (verbatim, top 10 by cosine similarity)
+**Response** (verbatim, top 10 by Elasticsearch kNN `_score`)
+
+Scores are Elasticsearch's normalized cosine score — `(1 + cosine) / 2`, mapped to `[0, 1]`. They rank results correctly but are not raw cosine values (e.g. `0.7998` ≈ cosine `0.60`).
 
 ```json
 {
@@ -244,7 +246,7 @@ GET /search?q=… → AssetSearchService → embed query → kNN search → JSON
 ```
 
 - **Embeddings:** Laravel AI SDK → OpenAI-compatible Ollama API (`nomic-embed-text`, 768 dims), configured from `EMBEDDING_BASE_URL`, `EMBEDDING_MODEL`, and `EMBEDDING_DIMENSIONS`
-- **Search:** Elasticsearch kNN on the `embedding` dense_vector field
+- **Search:** Elasticsearch kNN on the `embedding` dense_vector field; returned `score` is ES `_score`, not raw cosine
 - **Lifecycle:** create/update/delete on `Asset` syncs the index automatically
 
 ## Known limitations

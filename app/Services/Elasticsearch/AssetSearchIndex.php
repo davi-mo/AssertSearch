@@ -8,6 +8,8 @@ use Elastic\Elasticsearch\Response\Elasticsearch;
 
 class AssetSearchIndex
 {
+    private bool $indexEnsured = false;
+
     public function __construct(private Client $client) {}
 
     public function indexName(): string
@@ -22,7 +24,13 @@ class AssetSearchIndex
 
     public function ensureIndex(): void
     {
+        if ($this->indexEnsured) {
+            return;
+        }
+
         if ($this->indexExists()) {
+            $this->indexEnsured = true;
+
             return;
         }
 
@@ -44,6 +52,8 @@ class AssetSearchIndex
                 ],
             ],
         ]);
+
+        $this->indexEnsured = true;
     }
 
     /**
